@@ -1,0 +1,29 @@
+# Python junk
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+.env
+
+# Data (big)
+data/genres_original/
+data/images_original/
+data/mels/
+*.wav
+*.mp3
+
+# Model weights / checkpoints
+*.pt
+*.pth
+*.h5
+models/
+checkpoints/
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
