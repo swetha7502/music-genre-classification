@@ -34,11 +34,8 @@ import numpy as np
 import torch.nn.functional as F
 from model import GenreCNN
 
-# List of genres (order must match training labels)
-genres = [
-    'blues', 'classical', 'country', 'disco', 'hiphop',
-    'jazz', 'metal', 'pop', 'reggae', 'rock'
-]
+genres = ['blues', 'classical', 'country', 'disco', 'hiphop',
+          'jazz', 'metal', 'pop', 'reggae', 'rock']
 
 # ---- Load trained model ----
 checkpoint = torch.load("genre_cnn.pth", map_location="cpu")

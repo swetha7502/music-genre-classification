@@ -9,7 +9,7 @@ Deep learning pipeline that classifies 30-second audio clips into one of 10 genr
 - `train.py` – Trains the CNN on the processed mel data and saves `genre_cnn.pth`.
 - `dataset.py` / `model.py` – Dataset wrapper and CNN architecture.
 - `data/` – Expected location of the dataset (`genres_original/`) and generated mel features (`mels/`).
-- `genre_cnn.pth` – Saved weights for inference (generated after training; a copy is in the repo).
+- `genre_cnn.pth` – Saved weights for inference (generated after training).
 
 ## Requirements
 - Python 3.9+ recommended
