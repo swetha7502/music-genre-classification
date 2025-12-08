@@ -53,6 +53,18 @@ streamlit run app.py
 ```
 The app resizes mel-spectrograms to the training dimensions before inference.
 
+### UI Preview
+
+Home screen (custom dark theme with coral accent):
+
+![Streamlit home 1](assets/Screenshot%202025-12-08%20at%202.28.00%E2%80%AFAM.png)
+
+![Streamlit home 2](assets/Screenshot%202025-12-08%20at%202.28.57%E2%80%AFAM.png)
+
+![Streamlit home 3](assets/Screenshot%202025-12-08%20at%202.29.32%E2%80%AFAM.png)
+
+![Streamlit home 4](assets/Screenshot%202025-12-08%20at%202.30.01%E2%80%AFAM.png)
+
 ## Notes
 - `check.py` contains a small utility to re-export problematic audio files with pydub.
 - If you retrain with different input shapes, pass the new `input_size` when instantiating `GenreCNN` for inference (see `train.py` for how it is derived).
