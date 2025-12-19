@@ -3,7 +3,6 @@ import librosa
 import librosa.display
 import numpy as np
 import torch
-import torch.nn.functional as F
 import matplotlib.pyplot as plt
 
 from model import GenreCNN
@@ -57,7 +56,14 @@ genres = [
 
 @st.cache_resource
 def load_model():
-    model = GenreCNN(num_classes=10, input_size=331776)
+    # Infer flattened size from a dummy input (adaptive pool makes this stable)
+    dummy = torch.zeros(1, 1, 128, 1300)
+    probe = GenreCNN(num_classes=10)
+    with torch.no_grad():
+        out = probe.conv_layers(dummy)
+        flat = out.view(out.size(0), -1).size(1)
+
+    model = GenreCNN(num_classes=10, input_size=flat)
     checkpoint = torch.load("genre_cnn.pth", map_location="cpu")
     model.load_state_dict(checkpoint)
     model.eval()
@@ -79,15 +85,10 @@ def predict(audio_file):
     mel_db = librosa.power_to_db(mel, ref=np.max)
 
     mel_tensor = torch.tensor(mel_db, dtype=torch.float32).unsqueeze(0).unsqueeze(0)
-
-    target_height = 128
-    target_width = 1296
-    mel_tensor = F.interpolate(
-        mel_tensor,
-        size=(target_height, target_width),
-        mode="bilinear",
-        align_corners=False,
-    )
+    # Per-sample normalization to match training preprocessing
+    mean = mel_tensor.mean()
+    std = mel_tensor.std()
+    mel_tensor = (mel_tensor - mean) / (std + 1e-6)
 
     with torch.no_grad():
         out = model(mel_tensor)

@@ -1,9 +1,12 @@
+import os
+
+import matplotlib.pyplot as plt
+import numpy as np
 import torch
 from torch.utils.data import DataLoader, random_split
+
 from dataset import GenreDataset
 from model import GenreCNN
-import matplotlib.pyplot as plt
-import os
 
 
 def compute_flattened_size(sample_batch, device):
@@ -66,7 +69,43 @@ def evaluate():
     acc = 100.0 * correct / total if total else 0.0
     print(f"Test accuracy: {acc:.2f}% ({correct}/{total})")
     print("Confusion matrix (rows=true, cols=pred):")
-    print(confusion.cpu().numpy())
+    conf_np = confusion.cpu().numpy()
+    print(conf_np)
+
+    # Derived metrics
+    true_pos = np.diag(conf_np)
+    support = conf_np.sum(axis=1)
+    pred_total = conf_np.sum(axis=0)
+    precision = np.divide(
+        true_pos,
+        pred_total,
+        out=np.zeros_like(true_pos, dtype=float),
+        where=pred_total != 0,
+    )
+    recall = np.divide(
+        true_pos,
+        support,
+        out=np.zeros_like(true_pos, dtype=float),
+        where=support != 0,
+    )
+    f1 = np.divide(
+        2 * precision * recall,
+        precision + recall,
+        out=np.zeros_like(true_pos, dtype=float),
+        where=(precision + recall) != 0,
+    )
+    macro_precision = precision.mean() if len(precision) else 0.0
+    macro_recall = recall.mean() if len(recall) else 0.0
+    macro_f1 = f1.mean() if len(f1) else 0.0
+
+    print("\nPer-class metrics:")
+    for idx, name in enumerate(class_names):
+        print(
+            f"  {name:<12} P: {precision[idx]:.3f} | R: {recall[idx]:.3f} | F1: {f1[idx]:.3f} | Support: {support[idx]}"
+        )
+    print(
+        f"\nMacro Precision: {macro_precision:.3f}, Macro Recall: {macro_recall:.3f}, Macro F1: {macro_f1:.3f}"
+    )
 
     # Plot and save confusion matrix
     os.makedirs("assets", exist_ok=True)

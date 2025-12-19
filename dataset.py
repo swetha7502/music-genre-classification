@@ -24,4 +24,9 @@ class GenreDataset(Dataset):
         mel = np.expand_dims(mel, axis=0)  # shape: (1, 128, time)
         mel = torch.tensor(mel, dtype=torch.float32)
 
+        # Per-sample normalization for stable training
+        mean = mel.mean()
+        std = mel.std()
+        mel = (mel - mean) / (std + 1e-6)
+
         return mel, label
